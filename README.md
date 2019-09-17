@@ -36,6 +36,7 @@ var SRTM = ee.Image("USGS/SRTMGL1_003"),
     subGlaciers = ee.FeatureCollection("users/dfawcett/allAsiaGlaciers_pathrowclip");//dominic to share file?
 ```
 
+
 Next, run the script:
 ```javascript
 //Landsat path 140 rows 40-41 snow cover: compute snow cover fractions and ice cover
