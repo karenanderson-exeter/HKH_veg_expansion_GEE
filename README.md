@@ -9,7 +9,18 @@ Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibrat
 Roy, D.P., Kovalskyy, V., Zhang, H.K., Vermote, E.F., Yan, L., Kumar, S.S. and Egorov, A. (2016) Characterization of Landsat-7 to Landsat-8 reflective wavelength and normalized difference vegetation index continuity. Remote sensing of Environment, 185, pp.57-70. [https://www.sciencedirect.com/science/article/pii/S0034425715302455]
 
 
-## Part 1: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where? ##
+## Part 1: what is the extent of the subnival zone? ##
+
+We used the Moderate Resolution Imaging Spectrometer (MODIS) fractional snow product to answer this question at two scales: 
+
+1. the "P140/R40-41" region, which is the area defined by two tiles of Landsat data (path 140, rows 40 and 41; see manuscript Figure 2). The region referred to as P140/R40-41 covered an area on the Nepal/Tibet border centred on Mount Everest.
+2. the national extent of Nepal. 
+
+We selected recent years (2013-2017) to generate a product describing the median snow covered area in late Summer (August and September), when the snow cover is at a minimum (determined using: http://geoapps.icimod.org/HKHSnowCover/). This output was used to represent permanent snow-covered areas for the ROI. The permanent snow-covered area was combined with the Randolph Glacier Inventory (RGI) to calculate the spatial extent of permanent snow and ice cover. This was compared to the extent of the entire subnival zone, represented by the total area above 4150 m.a.s.l using the Shuttle Radar Topography Mission (SRTM) 30 m gridded dataset as a measurement of height above mean sea level. 
+
+
+
+## Part 2: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where? ##
 
 ### P140/R40-41 region ##
 
@@ -445,7 +456,7 @@ Next, perform the analysis:
 //SR version, NDVI threshold: 0.1, clouds, shadows, aerosols and snow masked
 
 //load Hindu-Kush Himalaya boundaries shapefile
-var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");
+var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw"); // dominic to share the file?
 
 //set start and end of analysis (data too sparse before 1993)
 var startYear=1993
