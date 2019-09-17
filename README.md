@@ -1,8 +1,8 @@
 ## Google Earth Engine Code Share ##
 
-### This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is accepted for publication in Global Change Biology. This code is shared in the spirit of open science. ### 
+### This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is currently under consideration for publication in Global Change Biology. This code is shared in the spirit of open science. ### 
 
-*Anderson, K., Fawcett, D., Cugulliere, A., Benford, S. and Jones, D. (2019) Vegetation expansion in the subnival Hindu Kush Himalaya, Global Change Biology (in press).*
+*Anderson, K., Fawcett, D., Cugulliere, A., Benford, S. and Jones, D. (2019) Vegetation expansion in the subnival Hindu Kush Himalaya, Global Change Biology (in review).*
 
 #### Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here: ####
 
