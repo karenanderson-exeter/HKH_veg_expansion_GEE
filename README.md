@@ -4,7 +4,7 @@
 
 Anderson, K., Fawcett, D., Cugulliere, A., Benford, S. and Jones, D. (2019) Vegetation expansion in the subnival Hindu Kush Himalaya, Global Change Biology (in press).
 
-### Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here: ###
+#### Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here: ####
 
 Roy, D.P., Kovalskyy, V., Zhang, H.K., Vermote, E.F., Yan, L., Kumar, S.S. and Egorov, A. (2016) Characterization of Landsat-7 to Landsat-8 reflective wavelength and normalized difference vegetation index continuity. Remote sensing of Environment, 185, pp.57-70. [https://www.sciencedirect.com/science/article/pii/S0034425715302455]
 
@@ -14,6 +14,7 @@ Roy, D.P., Kovalskyy, V., Zhang, H.K., Vermote, E.F., Yan, L., Kumar, S.S. and E
 We used the Moderate Resolution Imaging Spectrometer (MODIS) fractional snow product to answer this question at two scales: 
 
 1. the "P140/R40-41" region, which is the area defined by two tiles of Landsat data (path 140, rows 40 and 41; see manuscript Figure 2). The region referred to as P140/R40-41 covered an area on the Nepal/Tibet border centred on Mount Everest.
+
 2. the national extent of Nepal. 
 
 We selected recent years (2013-2017) to generate a product describing the median snow covered area in late Summer (August and September), when the snow cover is at a minimum (determined using: http://geoapps.icimod.org/HKHSnowCover/). This output was used to represent permanent snow-covered areas for the ROI. The permanent snow-covered area was combined with the Randolph Glacier Inventory (RGI) to calculate the spatial extent of permanent snow and ice cover. This was compared to the extent of the entire subnival zone, represented by the total area above 4150 m.a.s.l using the Shuttle Radar Topography Mission (SRTM) 30 m gridded dataset as a measurement of height above mean sea level. 
@@ -24,7 +25,7 @@ First, declare the imports as follows:
 
 ```javascript
 var SRTM = ee.Image("USGS/SRTMGL1_003"),
-    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"),
+    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"),//dominic to share file?
     SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
     geometry = /* color: #ffc82d */ee.Geometry.Polygon(
         [[[87.51708984375, 26.504988828743404],
@@ -32,7 +33,7 @@ var SRTM = ee.Image("USGS/SRTMGL1_003"),
           [86.407470703125, 29.81205076752506],
           [85.660400390625, 26.770135082241445]]]),
     modisWater = ee.Image("MODIS/MOD44W/MOD44W_005_2000_02_24"),
-    subGlaciers = ee.FeatureCollection("users/dfawcett/allAsiaGlaciers_pathrowclip");
+    subGlaciers = ee.FeatureCollection("users/dfawcett/allAsiaGlaciers_pathrowclip");//dominic to share file?
 ```
 
 Next, run the script:
@@ -40,7 +41,7 @@ Next, run the script:
 //Landsat path 140 rows 40-41 snow cover: compute snow cover fractions and ice cover
 //last modified 16/09/2019
 
-var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");
+var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");//dominic to share file?
 
 //glacier shapefiles from the Randolph Glacier Inventory
 var glaciersShp= subGlaciers
