@@ -132,6 +132,10 @@ var outlines = empty.paint({
 
 Map.addLayer(outlines);
 ```
+#### Example output: ####
+
+![P140-R40/41 subnival zone analysis example](Github_P140R4041_snow.JPG?raw=true "P140-R40/41 subnival zone analysis example")
+
 
 
 ### Nepal extent ###
