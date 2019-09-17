@@ -20,10 +20,10 @@ var pathrowextent = /* color: #ffc82d */ee.Geometry.Polygon(
           [86.407470703125, 29.81205076752506],
           [85.660400390625, 26.770135082241445]]]),
     SRTM = ee.Image("USGS/SRTMGL1_003"),
-    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"),
+    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"), //dominic to provide file?
     SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
-    heightlowres = ee.FeatureCollection("users/dfawcett/heightlowres"),
-    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),
+    heightlowres = ee.FeatureCollection("users/dfawcett/heightlowres"),//dominic to provide file?
+    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),//dominic to provide file?
     LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
     LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
     LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
@@ -41,7 +41,7 @@ var endYear=2018
 //list of years
 var years = ee.List.sequence(startYear, endYear);
 
-//adjust elevation thresholds
+//adjust elevation thresholds - user can uncomment those that are required. As set currently, these will set the lowest //elevation band in the subnival zone as that to be analysed.
 var elemin=4150
 var elemax=4500
 //var elemin=4500
