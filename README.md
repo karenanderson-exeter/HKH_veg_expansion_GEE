@@ -1,4 +1,4 @@
-## Google Earth Engine Code Share ##
+## Google Earth Engine Code - Hindu Kush Himalaya Subnival Vegetation Project ##
 
 ### This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is currently under consideration for publication in Global Change Biology. This code is shared in the spirit of open science. ### 
 
