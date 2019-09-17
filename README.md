@@ -907,3 +907,6 @@ var totalpixvalues = ee.FeatureCollection(resultCollection).select(["totalpix"],
 Export.table.toDrive(greenfractionvalues, "HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_NDVI01_seed2222_Roycorr"))
 Export.table.toDrive(totalpixvalues,"HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_totalpix_seed2222_Roycorr"))
 ```
+#### Example output: ####
+
+![HKH-extent vegetation fraction](Github_HKH_extent_vegfraction.JPG?raw=true "HKH-extent vegetation fraction")
