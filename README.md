@@ -41,7 +41,7 @@ var endYear=2018
 //list of years
 var years = ee.List.sequence(startYear, endYear);
 
-//adjust elevation thresholds - user can uncomment those that are required. As set currently, these will set the lowest //elevation band in the subnival zone as that to be analysed.
+//adjust elevation thresholds - uncomment as required. 
 var elemin=4150
 var elemax=4500
 //var elemin=4500
@@ -51,7 +51,7 @@ var elemax=4500
 //var elemin=5500
 //var elemax=6000
 
-//region of interest
+//set the region of interest
 var roi=pathrowextent;
 
 //create elevation and aspect mask based on SRTM 90 m resolution
@@ -70,6 +70,7 @@ var outlines = empty.paint({
   width: 2
 });
 
+//add the area to be analysed to the map viewer window in GEE
 Map.addLayer(outlines);
 
 //Select Landsat datasets within region, for October and November
@@ -91,7 +92,7 @@ var LS8collROI = LS8SR
 
 //masking clouds, haze, snow and shadow
 
-//extract quality bits information from QA band
+//extract image quality information from QA band
 
 var getQABits = function(image, start, end, newName) {
     // Compute the bits we need to extract.
@@ -105,6 +106,7 @@ var getQABits = function(image, start, end, newName) {
 };
 
 // Function to mask out undesired pixels
+
 var maskClouds = function(image) {
   
   // Select the QA band
@@ -129,7 +131,8 @@ var LS5and7collROI=ee.ImageCollection(LS5collROI.merge(LS7collROI))
 var LS5and7collROIcmasked=LS5and7collROI.map(maskClouds)
 var LS8collROIcmasked=LS8collROI.map(maskClouds)
 
-//make an empty image per year (needed so script doesn't fail for years with missing data)
+//make an empty image per year 
+//(needed so script doesn't fail for years with missing data)
 function makeImgsWithDates(year){
   var newimg=ee.Image(0).set("system:time_start", ee.Date(ee.Number(year).format('%d').cat('-01-01')).millis());
   return newimg.rename('NDVI').updateMask(0);
