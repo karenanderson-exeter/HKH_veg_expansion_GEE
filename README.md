@@ -216,3 +216,18 @@ var resultarray=ee.FeatureCollection(ee.Array.cat(resultList,1));
 var arraychart =ui.Chart.array.values(resultarray,1)
 print(arraychart)
 ```
+
+### Nepal region ##
+
+This code performs the analysis to quantify time-series change across the areal extent of the country of Nepal. For this, a KMZ shapefile delineating the boundary of Nepal was uploaded into GEE and used to constrain the analysis. 
+
+First, declare the imports as follows:
+
+```javascript
+var SRTM = ee.Image("USGS/SRTMGL1_003"),
+    SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
+    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),
+    LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
+    LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
+```
