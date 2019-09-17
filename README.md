@@ -25,7 +25,6 @@ First, declare the imports as follows:
 
 ```javascript
 var SRTM = ee.Image("USGS/SRTMGL1_003"),
-    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"),//dominic to share file?
     SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
     geometry = /* color: #ffc82d */ee.Geometry.Polygon(
         [[[87.51708984375, 26.504988828743404],
@@ -33,7 +32,7 @@ var SRTM = ee.Image("USGS/SRTMGL1_003"),
           [86.407470703125, 29.81205076752506],
           [85.660400390625, 26.770135082241445]]]),
     modisWater = ee.Image("MODIS/MOD44W/MOD44W_005_2000_02_24"),
-    subGlaciers = ee.FeatureCollection("users/dfawcett/allAsiaGlaciers_pathrowclip");//dominic to share file?
+    subGlaciers = ee.FeatureCollection("users/dfawcett/allAsiaGlaciers_pathrowclip");
 ```
 
 
@@ -42,7 +41,7 @@ Next, run the script:
 //Landsat path 140 rows 40-41 snow cover: compute snow cover fractions and ice cover
 //last modified 16/09/2019
 
-var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");//dominic to share file?
+var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");
 
 //glacier shapefiles from the Randolph Glacier Inventory
 var glaciersShp= subGlaciers
@@ -259,10 +258,8 @@ var pathrowextent = /* color: #ffc82d */ee.Geometry.Polygon(
           [86.407470703125, 29.81205076752506],
           [85.660400390625, 26.770135082241445]]]),
     SRTM = ee.Image("USGS/SRTMGL1_003"),
-    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"), //dominic to provide file?
     SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
-    heightlowres = ee.FeatureCollection("users/dfawcett/heightlowres"),//dominic to provide file?
-    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),//dominic to provide file?
+    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),
     LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
     LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
     LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
@@ -280,7 +277,7 @@ var endYear=2018
 //list of years
 var years = ee.List.sequence(startYear, endYear);
 
-//adjust elevation thresholds - uncomment as required. 
+//adjust elevation thresholds
 var elemin=4150
 var elemax=4500
 //var elemin=4500
@@ -290,7 +287,7 @@ var elemax=4500
 //var elemin=5500
 //var elemax=6000
 
-//set the region of interest
+//region of interest
 var roi=pathrowextent;
 
 //create elevation and aspect mask based on SRTM 90 m resolution
@@ -309,7 +306,6 @@ var outlines = empty.paint({
   width: 2
 });
 
-//add the area to be analysed to the map viewer window in GEE
 Map.addLayer(outlines);
 
 //Select Landsat datasets within region, for October and November
@@ -331,7 +327,7 @@ var LS8collROI = LS8SR
 
 //masking clouds, haze, snow and shadow
 
-//extract image quality information from QA band
+//extract quality bits information from QA band
 
 var getQABits = function(image, start, end, newName) {
     // Compute the bits we need to extract.
@@ -345,7 +341,6 @@ var getQABits = function(image, start, end, newName) {
 };
 
 // Function to mask out undesired pixels
-
 var maskClouds = function(image) {
   
   // Select the QA band
@@ -370,8 +365,7 @@ var LS5and7collROI=ee.ImageCollection(LS5collROI.merge(LS7collROI))
 var LS5and7collROIcmasked=LS5and7collROI.map(maskClouds)
 var LS8collROIcmasked=LS8collROI.map(maskClouds)
 
-//make an empty image per year 
-//(needed so script doesn't fail for years with missing data)
+//make an empty image per year (needed so script doesn't fail for years with missing data)
 function makeImgsWithDates(year){
   var newimg=ee.Image(0).set("system:time_start", ee.Date(ee.Number(year).format('%d').cat('-01-01')).millis());
   return newimg.rename('NDVI').updateMask(0);
@@ -449,11 +443,12 @@ for (var i=0; i<26; i++){
  resultList=resultList.add(greenfrac); 
 }
 
-//Chart the resulting array, export from displayed chart
+//Chart the resulting array
 var resultarray=ee.FeatureCollection(ee.Array.cat(resultList,1));
-//Export.table.toDrive(resultarray) //currently not functional
 var arraychart =ui.Chart.array.values(resultarray,1)
 print(arraychart)
+//Export result array as table
+Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
 ```
 
 ### Nepal region ###
@@ -465,7 +460,7 @@ First, declare the imports as follows:
 ```javascript
 var SRTM = ee.Image("USGS/SRTMGL1_003"),
     SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
-    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"), //dominic to share file?
+    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder"),
     LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
     LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
     LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR");
@@ -650,11 +645,13 @@ for (var i=0; i<26; i++){
  resultList=resultList.add(greenfrac); 
 }
 
-//Chart the resulting array, export from displayed chart
+//Chart the resulting array
 var resultarray=ee.FeatureCollection(ee.Array.cat(resultList,1));
-//Export.table.toDrive(resultarray) //currently not functional
 var arraychart =ui.Chart.array.values(resultarray,1)
 print(arraychart)
+//Export array as table
+Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
+
 ```
 
 ### HKH extent analysis ###
