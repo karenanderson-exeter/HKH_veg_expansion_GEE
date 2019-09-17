@@ -237,6 +237,10 @@ var outlines = empty.paint({
 Map.addLayer(outlines);
 ```
 
+Here is an example output from running this script over the Nepalese extent:
+
+![Nepal subnival zone analysis example](Github_Nepalsnowresult.JPG?raw=true "Nepal subnival zone analysis example")
+
 
 
 ## Part 2: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where? ##
