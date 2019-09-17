@@ -13,7 +13,7 @@ This code performs the analysis to quantify time-series change in two tiles of L
 
 First, declare the imports as follows:
 
-```
+```javascript
 var pathrowextent = /* color: #ffc82d */ee.Geometry.Polygon(
         [[[87.51708984375, 26.504988828743404],
           [88.3026123046875, 29.54000879252545],
@@ -32,7 +32,7 @@ var pathrowextent = /* color: #ffc82d */ee.Geometry.Polygon(
 Next, run the analysis:
 
 
-```
+```javascript
 //Extracting vegetated pixel fractions over Landsat path 140 rows 40-41 region
 
 var startYear=1993
