@@ -1,6 +1,16 @@
+## Google Earth Engine Code - Hindu Kush Himalaya Subnival Vegetation Project ##
+
+### This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is currently under consideration for publication in Global Change Biology. This code is shared in the spirit of open science. ### 
+
+*Anderson, K., Fawcett, D., Cugulliere, A., Benford, S. and Jones, D. (2019) Vegetation expansion in the subnival Hindu Kush Himalaya, Global Change Biology (in review).*
+
+#### Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here: ####
+
+*Roy, D.P., Kovalskyy, V., Zhang, H.K., Vermote, E.F., Yan, L., Kumar, S.S. and Egorov, A. (2016) Characterization of Landsat-7 to Landsat-8 reflective wavelength and normalized difference vegetation index continuity. Remote sensing of Environment, 185, pp.57-70. [https://www.sciencedirect.com/science/article/pii/S0034425715302455]*
+
+### TABLE OF CONTENTS ###
+
 - [Google Earth Engine Code - Hindu Kush Himalaya Subnival Vegetation Project](#google-earth-engine-code---hindu-kush-himalaya-subnival-vegetation-project)
-  * [This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is currently under consideration for publication in Global Change Biology. This code is shared in the spirit of open science.](#this-repository-provides-code-for-performing-the-google-earth-engine-analysis-detailed-in-the-below-manuscript--which-is-currently-under-consideration-for-publication-in-global-change-biology-this-code-is-shared-in-the-spirit-of-open-science)
-    + [Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here:](#note--within-these-scripts-we-implement-the-landsat-7-to-landsat-8-intercalibration--documented-in-roy-et-al--2016--if-you-are-interested-in-this--you-can-find-their-original-paper-here-)
 - [Part 1: what is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
   * [P140/R40-41 extent](#p140-r40-41-extent)
     + [Example output:](#example-output-)
@@ -17,18 +27,6 @@
   * [P140/R40-41 extent](#p140-r40-41-extent-1)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
-
-## Google Earth Engine Code - Hindu Kush Himalaya Subnival Vegetation Project ##
-
-### This repository provides code for performing the Google Earth Engine analysis detailed in the below manuscript, which is currently under consideration for publication in Global Change Biology. This code is shared in the spirit of open science. ### 
-
-*Anderson, K., Fawcett, D., Cugulliere, A., Benford, S. and Jones, D. (2019) Vegetation expansion in the subnival Hindu Kush Himalaya, Global Change Biology (in review).*
-
-#### Note, within these scripts we implement the Landsat-7 to Landsat-8 intercalibration, documented in Roy et al (2016). If you are interested in this, you can find their original paper here: ####
-
-*Roy, D.P., Kovalskyy, V., Zhang, H.K., Vermote, E.F., Yan, L., Kumar, S.S. and Egorov, A. (2016) Characterization of Landsat-7 to Landsat-8 reflective wavelength and normalized difference vegetation index continuity. Remote sensing of Environment, 185, pp.57-70. [https://www.sciencedirect.com/science/article/pii/S0034425715302455]*
-
 
 
 ## Part 1: what is the extent of the subnival zone? ##
