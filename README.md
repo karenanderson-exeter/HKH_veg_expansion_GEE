@@ -10,7 +10,7 @@
 
 ### TABLE OF CONTENTS ###
 
-- [Part 1: what is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
+- [Part 1: What is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
   * [P140/R40-41 extent](#p140-r40-41-extent)
   * [Nepal extent](#nepal-extent)
     
@@ -29,7 +29,7 @@
 
 
 
-## Part 1: what is the extent of the subnival zone? ##
+## Part 1: What is the extent of the subnival zone? ##
 
 We used the Moderate Resolution Imaging Spectrometer (MODIS) fractional snow product to answer this question at two scales: 
 
@@ -932,7 +932,7 @@ Export.table.toDrive(totalpixvalues,"HKH100_90m_".concat(elemin.toString(),"_",e
 
 ![HKH-extent vegetation fraction](Github_HKH_extent_vegfraction.JPG?raw=true "HKH-extent vegetation fraction")
 
-## Part 3: validation ##
+## Part 3: Validation ##
 
 Here, we provide the code for linking the satellite derived vegetation product with observations of vegetation presence/absence derived from photographic data. 
 
