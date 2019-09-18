@@ -1271,3 +1271,149 @@ var resultarray=ee.FeatureCollection(ee.Array.cat(resultListSnowFrac,1));
 
 Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
 ```
+
+### Nepal extent ###
+
+First, declare the imports as follows:
+
+```javascript
+var SRTM = ee.Image("USGS/SRTMGL1_003"),
+    SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
+    LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR"),
+    LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR"),
+    nepalborder = ee.FeatureCollection("users/dfawcett/NepalBorder");
+```
+
+Next, run the script:
+
+```javascript
+//Fractional snow cover time-series analysis for Nepal using Landsat QA flags
+//last modified 17/09/2019
+
+
+var startYear=1993
+var endYear=2018
+ 
+//list of years
+var years = ee.List.sequence(startYear, endYear);
+
+//adjust elevation thresholds
+var elemin=4150
+var elemax=6000
+
+//region of interest
+var roi=nepalborder;
+
+//create elevation and aspect mask based on SRTM 90 m resolution
+var elemask =SRTM90.clip(roi).gt(elemin).and(SRTM90.clip(roi).lt(elemax));
+var aspect = ee.Terrain.aspect(SRTM.clip(roi));
+var aspectmask = aspect.gte(45).and(aspect.lte(315));
+
+//clip SRTM data to region
+var SRTMclip = SRTM.clip(roi);
+
+
+//Select Landsat datasets within region, for October and November
+
+var LS5collROI = LS5SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B5','B4', 'B3', 'B2','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);
+
+var LS7collROI = LS7SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B5','B4', 'B3', 'B2','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);
+
+var LS8collROI = LS8SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B6','B5', 'B4', 'B3','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);//different band designations than previous missions
+
+//merge them into one collection
+var LScollROI=ee.ImageCollection(LS7collROI.merge(LS8collROI).merge(LS5collROI))
+
+//mask undesired pixels and extract snow
+
+var getQABits = function(image, start, end, newName) {
+    // Compute the bits we need to extract.
+    var pattern = 0;
+    for (var i = start; i <= end; i++) {
+       pattern += Math.pow(2, i);
+    }
+    return image.select([0], [newName])
+                  .bitwise_and(pattern)
+                  .right_shift(start);
+};
+
+// get snow pixels
+var getSnow = function(image) {
+  // Select the QA band.
+  var QA = image.select('pixel_qa');
+ 
+  var internal_snow_algorithm_flag = getQABits(QA,4,4,'internal_snow_algorithm_flag')
+    var internal_shadow_algorithm_flag = getQABits(QA, 3, 3, 'internal_shadow_algorithm_flag');
+  var internal_cloud_algorithm_flag_AOT = getQABits(QA, 6, 7, 'internal_cloud_algorithm_flag_AOT');
+  // Create a mask for the image.
+  var aotmask = internal_cloud_algorithm_flag_AOT.lt(2);
+  var shadmask = internal_shadow_algorithm_flag.not();
+  var outimg= image.mask(aotmask.and(shadmask));
+  var snowband=internal_snow_algorithm_flag.mask(aotmask.and(shadmask)).rename('SNOW')
+  // Return a snow mask, masking out cloud and shadow areas
+  return outimg.addBands(snowband)
+};
+
+var LScollROIsnow=LScollROI.map(getSnow)
+
+//function to calculate median snow cover per year
+var calculateAnnualMaxSnow = function(year){
+  var currentSnow=LScollROIsnow.select('SNOW').filter(ee.Filter.calendarRange({start:year, end:year,field:'year'}));
+  var medianSnow=currentSnow.select('SNOW').median().set('system:time_start',ee.Date(ee.Number(year).format('%d').cat('-01-01')).millis());
+  var onlySnow=medianSnow.mask(medianSnow).rename('onlySNOW')
+  return medianSnow.addBands(onlySnow)
+};
+
+//apply function to list of years
+var LSSnowcollfinal= ee.ImageCollection(years.map(calculateAnnualMaxSnow));
+
+//generate fraction of snow unmasked pixels per ROI
+var getSnowPixelCount = function(img2red){
+  
+  //mask areas outside the elevation band
+  img2red=img2red.updateMask(SRTMclip.gt(elemin).and(SRTMclip.lt(elemax)));//.updateMask(OverallSnowMask);//);
+  
+  //mask areas on north-facing slopes
+  img2red=img2red.updateMask(aspectmask); 
+  
+  //get count of total unmasked pixels and snow unmasked pixels
+  var totalPixelCount =img2red.select(['SNOW','onlySNOW']).reduceRegions({
+    collection: roi,
+    reducer: ee.Reducer.count(),
+    scale: 30
+  // crs: 'EPSG:32645'
+  });
+ 
+
+return totalPixelCount//ee.FeatureCollection([totalPixelCount.select(['NDVI','NDVIthresh'])]);
+}
+
+//apply calculation of counts to all years
+var totalList = LSSnowcollfinal.map(getSnowPixelCount).toList(26);
+
+//Conversions to unpack collection and calculate snow pixel fractions (ideally optimise in a way which does not require for loop)
+var resultListSnowFrac = ee.List([]);
+var resultListTot = ee.List([]);
+for (var i=0; i<26; i++){
+  var colreducer = ee.Reducer.toList();
+  var totalpix = ee.Array(ee.FeatureCollection(totalList.get(i)).reduceColumns(colreducer, ['SNOW']).get('list'));
+  var snowpix = ee.Array(ee.FeatureCollection(totalList.get(i)).reduceColumns(colreducer, ['onlySNOW']).get('list'));
+  var snowfrac = snowpix.divide(totalpix);
+resultListSnowFrac=resultListSnowFrac.add(snowfrac); 
+}
+
+//export resulting array
+var resultarray=ee.FeatureCollection(ee.Array.cat(resultListSnowFrac,1));
+
+Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
+```
