@@ -10,23 +10,23 @@
 
 ### TABLE OF CONTENTS ###
 
-- [Google Earth Engine Code - Hindu Kush Himalaya Subnival Vegetation Project](#google-earth-engine-code---hindu-kush-himalaya-subnival-vegetation-project)
 - [Part 1: what is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
   * [P140/R40-41 extent](#p140-r40-41-extent)
-    + [Example output:](#example-output-)
   * [Nepal extent](#nepal-extent)
-    + [Example output:](#example-output--1)
+    
 - [Part 2: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where?](#part-2--has-the-spatial-extent-of-subnival-vegetation-changed-and--if-so--at-what-rate-and-where-)
   * [P140/R40-41 region](#p140-r40-41-region)
   * [Nepal region](#nepal-region)
   * [HKH extent analysis](#hkh-extent-analysis)
-    + [Example output:](#example-output--2)
+   
 - [Part 3: validation](#part-3--validation)
-    + [Example output:](#example-output--3)
+   
 - [Part 4: Supplementary information: is there a time-series trend in fractional snow cover?](#part-4--supplementary-information--is-there-a-time-series-trend-in-fractional-snow-cover-)
   * [P140/R40-41 extent](#p140-r40-41-extent-1)
+  * [Nepal extent](#nepal-extent-1)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 
 ## Part 1: what is the extent of the subnival zone? ##
