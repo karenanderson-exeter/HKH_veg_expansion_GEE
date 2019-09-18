@@ -10,7 +10,7 @@
 
 ### TABLE OF CONTENTS ###
 
-- [Part 1: What is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
+- [Part 1: What is the extent of the subnival zone?](#part-1--What-is-the-extent-of-the-subnival-zone-)
   * [P140/R40-41 extent](#p140-r40-41-extent)
   * [Nepal extent](#nepal-extent)
     
@@ -19,7 +19,7 @@
   * [Nepal region](#nepal-region)
   * [HKH extent analysis](#hkh-extent-analysis)
    
-- [Part 3: validation](#part-3--validation)
+- [Part 3: Validation](#part-3--Validation)
    
 - [Part 4: Supplementary information: is there a time-series trend in fractional snow cover?](#part-4--supplementary-information--is-there-a-time-series-trend-in-fractional-snow-cover-)
   * [P140/R40-41 extent](#p140-r40-41-extent-1)
