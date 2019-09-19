@@ -682,7 +682,7 @@ Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray
 
 ### HKH extent ###
 
-This code performs the analysis to quantify time-series change across the entirety of the Hindu Kush Himalayan region. A different method was followed here because GEE allocates users a fixed processing capacity, so to be able to measure change over the entire HKH, a random sampling method using regions of interest (ROIs) was necessary. We defined 100 circular ROIs with a 5 km radius and randomly deployed these within each of the four height bands previously described. The total area covered by the ROIs that were used to sample the satellite data record equalled 31,416 km2 (overlap of ROIs and height bands not taken into account). Figure 3 in the manuscript shows the spatial distribution of the different height bands across the HKH sampled using the circular ROIs. 
+This code performs the analysis to quantify vegetation time-series change across the entirety of the Hindu Kush Himalayan region. A different method was followed here, as compared to the previous two methods, because GEE allocates users a fixed processing capacity... so to be able to measure change over the entire HKH, a random sampling method using regions of interest (ROIs) was necessary. We defined 100 circular ROIs with a 5 km radius and randomly deployed these within each of the four height bands previously described. The total area covered by the ROIs that were used to sample the satellite data record equalled 31,416 km2 (overlap of ROIs and height bands not taken into account). Figure 3 in the manuscript shows the spatial distribution of the different height bands across the HKH sampled using the circular ROIs. 
 
 First, declare the imports as follows:
 
@@ -703,7 +703,7 @@ Next, perform the analysis:
 //SR version, NDVI threshold: 0.1, clouds, shadows, aerosols and snow masked
 
 //load Hindu-Kush Himalaya boundaries shapefile
-var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw"); // dominic to share the file?
+var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");
 
 //set start and end of analysis (data too sparse before 1993)
 var startYear=1993
@@ -841,7 +841,6 @@ var getVegPixelCount = function(img2red){
   });
  return roiout.set('NDVI',totalPixelCount.get('NDVI'),'NDVIthresh',totalPixelCount.get('NDVIthresh'),'date',img2red.get('system:time_start'))
 
-return totalPixelCount
 }
 
 var resultArrays = ee.List([]);
@@ -929,6 +928,7 @@ var greenfractionvalues = ee.FeatureCollection(resultCollection).select(["greenf
 var totalpixvalues = ee.FeatureCollection(resultCollection).select(["totalpix"], null, false)
 Export.table.toDrive(greenfractionvalues, "HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_NDVI01_seed2222_Roycorr"))
 Export.table.toDrive(totalpixvalues,"HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_totalpix_seed2222_Roycorr"))
+
 ```
 #### Example output: ####
 
