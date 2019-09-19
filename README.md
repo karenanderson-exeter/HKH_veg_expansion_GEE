@@ -24,7 +24,7 @@
 - [Part 4: Supplementary information: is there a time-series trend in fractional snow cover?](#part-4--supplementary-information--is-there-a-time-series-trend-in-fractional-snow-cover-)
   * [P140/R40-41 extent](#p140-r40-41-extent-1)
   * [Nepal extent](#nepal-extent-1)
-
+  
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 
@@ -269,7 +269,7 @@ Map.addLayer(outlines);
 
 ## Part 2: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where? ##
 
-### P140/R40-41 region ###
+### P140/R40-41 extent ###
 
 This code performs the analysis to quantify time-series change in two tiles of Landsat data (path 140, rows 40 and 41; see manuscript Figure 2). The region referred to as P140/R40-41 covered an area on the Nepal/Tibet border centred on Mount Everest.
 
@@ -475,7 +475,7 @@ print(arraychart)
 Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
 ```
 
-### Nepal region ###
+### Nepal extent ###
 
 This code performs the analysis to quantify time-series change across the areal extent of the country of Nepal. For this, a KMZ shapefile delineating the boundary of Nepal was uploaded into GEE and used to constrain the analysis. 
 
@@ -678,7 +678,7 @@ Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray
 
 ```
 
-### HKH extent analysis ###
+### HKH extent ###
 
 This code performs the analysis to quantify time-series change across the entirety of the Hindu Kush Himalayan region. A different method was followed here because GEE allocates users a fixed processing capacity, so to be able to measure change over the entire HKH, a random sampling method using regions of interest (ROIs) was necessary. We defined 100 circular ROIs with a 5 km radius and randomly deployed these within each of the four height bands previously described. The total area covered by the ROIs that were used to sample the satellite data record equalled 31,416 km2 (overlap of ROIs and height bands not taken into account). Figure 3 in the manuscript shows the spatial distribution of the different height bands across the HKH sampled using the circular ROIs. 
 
@@ -1416,4 +1416,240 @@ resultListSnowFrac=resultListSnowFrac.add(snowfrac);
 var resultarray=ee.FeatureCollection(ee.Array.cat(resultListSnowFrac,1));
 
 Export.table.toDrive(ee.FeatureCollection(ee.Feature(null, { "data": resultarray })))
+```
+### HKH extent ###
+
+First, declare the imports as follows:
+
+```javascript
+var extent2 = /* color: #ffc82d */ee.Geometry.Polygon(
+        [[[87.51708984375, 26.504988828743404],
+          [88.3026123046875, 29.54000879252545],
+          [86.407470703125, 29.81205076752506],
+          [85.660400390625, 26.770135082241445]]]),
+    SRTM = ee.Image("USGS/SRTMGL1_003"),
+    OverallSnowMask = ee.Image("users/dfawcett/HimalayaSnowMask"),
+    SRTM90 = ee.Image("CGIAR/SRTM90_V4"),
+    heightlowres = ee.FeatureCollection("users/dfawcett/heightlowres"),
+    LS5SR = ee.ImageCollection("LANDSAT/LT05/C01/T1_SR"),
+    LS7SR = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR"),
+    LS8SR = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR");
+```
+
+
+Next, run the script:
+```javascript
+//Fractional snow cover time-series analysis for Hindu-Kush Himalaya (HKH) ROIs using Landsat QA flags
+//last modified 18/09/2019
+
+//load HKH boundaries shapefile
+var hkh = ee.FeatureCollection("ft:1Q3InAXAA3LAa_K_VLSbafnDiofJfhpbv1k8wqZMw");
+
+//set start and end of analysis
+var startYear=1993
+var endYear=2018
+
+//list of years
+var years = ee.List.sequence(startYear, endYear);
+ 
+//adjust elevation thresholds
+var elemin=4150
+var elemax=4500
+//var elemin=4500
+//var elemax=5000
+//var elemin=5000
+//var elemax=5500
+//var elemin=5500
+//var elemax=6000
+
+//list of years
+var years = ee.List.sequence(startYear, endYear);
+
+//region of interest
+var roi = hkh
+
+//create elevation and aspect mask based on SRTM 90 m resolution
+var elemask =SRTM90.clip(hkh).gt(elemin).and(SRTM90.clip(hkh).lt(elemax));
+var aspect = ee.Terrain.aspect(SRTM.clip(hkh));
+var aspectmask = aspect.gte(45).and(aspect.lte(315));
+
+//clip SRTM data to region
+var SRTMclip = SRTM.clip(hkh);
+
+//currently only use elevation mask for ROI selection
+var fullmask = elemask
+fullmask= fullmask.reproject({crs:'EPSG:32645',scale:1000})
+
+//height band as vector for ROI placement
+var vectorregion = fullmask.updateMask(fullmask).reduceToVectors({maxPixels: 2032924972,geometry:hkh});
+
+//display extent of height-band vector region on the map
+Map.addLayer(vectorregion,{color: "FF0000"});
+
+//create random points within the height band (seed here: 2222), then create a 5 km buffer around them
+var randpts= ee.FeatureCollection.randomPoints(vectorregion.geometry(),100,2222)
+var randptsbuff =randpts.map(function(geom){
+  return geom.buffer(5000)});
+  
+//export points for geographic evaluation
+Export.table.toDrive(randpts,'randpts');
+  
+//define random buffered points as new ROI extent
+roi=randptsbuff;
+
+var roiout=randptsbuff;
+
+//display location of random points on map
+Map.addLayer(randptsbuff.geometry(),{color:"00FF00"});
+
+
+
+//////////////////Landsat data preprocessing
+
+//extract snow flags, masking clouds and shadow
+
+//extract quality bits information from QA band
+var getQABits = function(image, start, end, newName) {
+    // Compute the bits we need to extract.
+    var pattern = 0;
+    for (var i = start; i <= end; i++) {
+       pattern += Math.pow(2, i);
+    }
+    return image.select([0], [newName])
+                  .bitwise_and(pattern)
+                  .right_shift(start);
+};
+
+
+//get snow pixels
+var getSnow = function(image) {
+  
+  // Select the QA band.
+  var QA = image.select('pixel_qa');
+  
+  var internal_snow_algorithm_flag = getQABits(QA,4,4,'internal_snow_algorithm_flag')
+    var internal_shadow_algorithm_flag = getQABits(QA, 3, 3, 'internal_shadow_algorithm_flag');
+  var internal_cloud_algorithm_flag_AOT = getQABits(QA, 6, 7, 'internal_cloud_algorithm_flag_AOT');
+  
+  var aotmask = internal_cloud_algorithm_flag_AOT.lt(2);
+  var shadmask = internal_shadow_algorithm_flag.not();
+
+  //Return an image masking out cloudy areas.
+  var outimg= image.mask(aotmask.and(shadmask));
+  //create snow band based on snow pixel flags
+  var snowband=internal_snow_algorithm_flag.mask(aotmask.and(shadmask)).rename('SNOW')
+  // Return an image including snow band
+  return outimg.addBands(snowband)
+};
+
+var LScollROIsnow=ee.ImageCollection(ee.Image(0))
+
+//function to calculate median snow extent per year
+var calculateAnnualMaxSnow = function(year){
+  var currentSnow=LScollROIsnow.select('SNOW').filter(ee.Filter.calendarRange({start:year, end:year,field:'year'}));
+  var medianSnow=currentSnow.select('SNOW').median().set('system:time_start',ee.Date(ee.Number(year).format('%d').cat('-01-01')).millis());
+  var onlySnow=medianSnow.mask(medianSnow).rename('onlySNOW')
+  return medianSnow.addBands(onlySnow)
+};
+
+//make an empty image per year (needed so script doesn't fail for years with missing data)
+function makeImgsWithDates(year){
+  var newimg=ee.Image(0).set("system:time_start", ee.Date(ee.Number(year).format('%d').cat('-01-01')).millis());
+  return newimg.rename('SNOW').updateMask(0);
+}
+
+//generate fraction of snow unmasked pixels per ROI
+var getSnowPixelCount = function(img2red){
+  
+  //mask areas outside the elevation band
+  img2red=img2red.updateMask(SRTMclip.gt(elemin).and(SRTMclip.lt(elemax)));//.updateMask(OverallSnowMask);//);
+  
+  //mask areas on north-facing slopes
+  img2red=img2red.updateMask(aspectmask); 
+  
+  //get count of total unmasked pixels and snow unmasked pixels
+  var totalPixelCount =img2red.select(['SNOW','onlySNOW']).reduceRegion({
+    geometry:  roiout.geometry(),
+    reducer: ee.Reducer.count(),
+    scale: 90
+  });
+  return roiout.set('SNOW',totalPixelCount.get('SNOW'),'onlySNOW',totalPixelCount.get('onlySNOW'),'date',img2red.get('system:time_start'))
+}
+
+
+var resultArrays = ee.List([]);
+  
+////////////////main function, ROIs as input
+var mainFunc = function(roicoll){
+
+roiout=ee.Feature(roicoll)
+
+//Select Landsat datasets within region, for October and November
+
+roi=roiout.geometry()
+var LS5collROI = LS5SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B5','B4', 'B3', 'B2','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);
+
+var LS7collROI = LS7SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B5','B4', 'B3', 'B2','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);
+
+var LS8collROI = LS8SR
+.filter(ee.Filter.calendarRange(10,11,'month'))
+.filterBounds(roi)
+.select(['B6','B5', 'B4', 'B3','pixel_qa'], ['SWIR','NIR', 'RED','GREEN','pixel_qa']);
+
+//merge them into one collection
+var LScollROI=ee.ImageCollection(LS8collROI.merge(LS7collROI.merge(LS5collROI)))
+
+//make empty images
+var emptyimgs = years.map(makeImgsWithDates);
+
+//add snow bands
+LScollROIsnow=LScollROI.map(getSnow).merge(emptyimgs)
+
+//compute yearly composites of snow
+var LSSnowcollfinal= ee.ImageCollection(years.map(calculateAnnualMaxSnow));
+
+//generate fraction of snow unmasked pixels per ROI
+
+//apply calculation of counts per ROIs to all images
+var totalList = LSSnowcollfinal.map(getSnowPixelCount).toList(26);
+
+//Conversions to unpack collection and calculate snow pixel fractions (for loop used which is best avoided, find better way)
+var resultListSnowFrac = ee.List([]);
+var resultListTot = ee.List([]);
+var yearlistout = ee.List([]);
+for (var i=0; i<26; i++){
+  var colreducer = ee.Reducer.toList();
+  var totalpix = ee.Number(ee.Feature(totalList.get(i)).get('SNOW'));
+  var snowpix = ee.Number(ee.Feature(totalList.get(i)).get('onlySNOW'));
+  var yearout=ee.Number(ee.Feature(totalList.get(i)).get('date'))
+  
+  var snowfrac = snowpix.divide(totalpix);
+  
+ resultListSnowFrac=resultListSnowFrac.add(snowfrac); 
+ resultListTot=resultListTot.add(totalpix)
+ yearlistout=yearlistout.add(yearout)
+}
+
+roiout=roiout.set('totalpix',resultListTot)
+roiout=roiout.set('snowfrac',resultListSnowFrac)
+roiout=roiout.set('years',yearlistout)
+
+return(roiout)
+
+}
+var iterpoints = randptsbuff.toList(100)
+var resultCollection= iterpoints.map(mainFunc)
+
+//export results (charts of results currently not possible due to memory limit)
+
+var snowfractionvalues = ee.FeatureCollection(resultCollection).select(["snowfrac"], null, false)
+var totalpixvalues = ee.FeatureCollection(resultCollection).select(["totalpix"], null, false)
+Export.table.toDrive(snowfractionvalues, "HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_snowfrac_seed2222"))
+Export.table.toDrive(totalpixvalues,"HKH100_90m_".concat(elemin.toString(),"_",elemax.toString(),"_totalpix_snow_seed2222"))
 ```
