@@ -10,22 +10,24 @@
 
 ### TABLE OF CONTENTS ###
 
-- [Part 1: What is the extent of the subnival zone?](#part-1--What-is-the-extent-of-the-subnival-zone-)
+- [Part 1: What is the extent of the subnival zone?](#part-1--what-is-the-extent-of-the-subnival-zone-)
   * [P140/R40-41 extent](#p140-r40-41-extent)
   * [Nepal extent](#nepal-extent)
     
 - [Part 2: Has the spatial extent of subnival vegetation changed and, if so, at what rate and where?](#part-2--has-the-spatial-extent-of-subnival-vegetation-changed-and--if-so--at-what-rate-and-where-)
-  * [P140/R40-41 region](#p140-r40-41-region)
-  * [Nepal region](#nepal-region)
-  * [HKH extent analysis](#hkh-extent-analysis)
-   
-- [Part 3: Validation](#part-3--Validation)
-   
-- [Part 4: Supplementary information: is there a time-series trend in fractional snow cover?](#part-4--supplementary-information--is-there-a-time-series-trend-in-fractional-snow-cover-)
   * [P140/R40-41 extent](#p140-r40-41-extent-1)
   * [Nepal extent](#nepal-extent-1)
-  
+  * [HKH extent](#hkh-extent)
+
+- [Part 3: Validation](#part-3--validation)
+    
+- [Part 4: Supplementary information: is there a time-series trend in fractional snow cover?](#part-4--supplementary-information--is-there-a-time-series-trend-in-fractional-snow-cover-)
+  * [P140/R40-41 extent](#p140-r40-41-extent-2)
+  * [Nepal extent](#nepal-extent-2)
+  * [HKH extent](#hkh-extent-1)
+
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 
 
